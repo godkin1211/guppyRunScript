@@ -20,7 +20,13 @@ cpuCallers=4
 cpuThreadsPerCaller=2
 workerThreads=6
 barcodingThreads=4
+dualBarcode=false
+barcodingConfigureFile="configuration.cfg"
 
+if ( $dualBarcode ); then 
+	barcodingConfigureFile="configuration_dual.cfg"
+	barcodeKit="EXP-DUAL00"
+fi
 
 if [[ $? -ne 0 ]]; then
 	echo -e "\033[1;31m[Error] Cannot find guppy_basecaller! Please check the installation path of guppy_basecaller!\033[0m"
@@ -38,17 +44,18 @@ $guppybasecaller -c $configureFile \
 	   --cpu_threads_per_caller $cpuThreadsPerCaller
 
 
+## Do Demultiplexing
 guppybarcoder=$(command -v guppy_barcoder)
 
 if [[ $? -ne 0 ]]; then
 	echo -e "\033[1;31m[Error] Cannot find guppy_barcoder! Please check the installation path of guppy_barcoder!\033[0m"
 fi
 
-## Do Demultiplexing
+
 $guppybarcoder -r -i $basecalledFastqDir \
 	           -s $barcodedFastqDir \
 			   --worker_threads $workerThreads \
+			   --config $barcodingConfigureFile \
 			   --num_barcode_threads $barcodingThreads \
 			   --barcode_kits $barcodeKit \
 			   --trim_barcodes
-
