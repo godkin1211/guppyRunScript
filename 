@@ -1,9 +1,0 @@
-#!/usr/bin/bash
-
-guppy=$(command -v guppy_basecaller)
-
-if [[ $? -ne 0 ]]; then
-	echo -e "\033[1;32m[Error] Cannot find guppy_basecaller!\033[0m"
-fi
-
-
